@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Level.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">lawnlayer</a> &gt; <a href="index.source.html" class="el_package">lawnlayer</a> &gt; <span class="el_source">Level.java</span></div><h1>Level.java</h1><pre class="source lang-java linenums">package lawnlayer;
+
+import processing.data.JSONArray;
+
+public class Level {
+    
+    /**
+     * The String file of map outlay for the level
+     */
+    private String outlay;
+
+    /**
+     * The progress goal of level
+     */
+    private int goal;
+
+    /**
+     * The JSON array contains enemies data for the level
+     */
+    private JSONArray enemies;
+
+    /**
+     * Create Level class that contains important information of Level instead of load JSON multiple times
+     * @param outlay
+     * @param goal
+     * @param enemies
+     */
+<span class="fc" id="L28">    public Level(String outlay, Double goal, JSONArray enemies) {</span>
+<span class="fc" id="L29">        this.outlay = outlay;</span>
+<span class="fc" id="L30">        this.goal = (int) (goal*100);</span>
+<span class="fc" id="L31">        this.enemies = enemies;</span>
+<span class="fc" id="L32">    }</span>
+
+    /**
+     * setter method for map outlay String
+     * @param outlay
+     */
+    public void setOutlay(String outlay) {
+<span class="fc" id="L39">        this.outlay = outlay;</span>
+<span class="fc" id="L40">    }</span>
+
+    /**
+     * getter method for map outlay String
+     * @return outlay String
+     */
+    public String getOutlay() {
+<span class="fc" id="L47">        return this.outlay;</span>
+    }
+
+    /**
+     * setter method for level's progress goal
+     * @param goal
+     */
+    public void setGoal(int goal) {
+<span class="fc" id="L55">        this.goal = goal;</span>
+<span class="fc" id="L56">    }</span>
+
+    /**
+     * getter method for level goal
+     * @return level's progress goal
+     */
+    public int getGoal() {
+<span class="fc" id="L63">        return this.goal;</span>
+    }
+
+    /**
+     * setter method for enemies JSON data
+     * @param enemies
+     */
+    public void setEnemies(JSONArray enemies) {
+<span class="fc" id="L71">        this.enemies = enemies;</span>
+<span class="fc" id="L72">    }</span>
+
+    /**
+     * getter method for enemies JSON data
+     * @return enemies JSON data
+     */
+    public JSONArray getEnemies() {
+<span class="fc" id="L79">        return this.enemies;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

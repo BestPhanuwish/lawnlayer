@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Player.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">lawnlayer</a> &gt; <a href="index.source.html" class="el_package">lawnlayer</a> &gt; <span class="el_source">Player.java</span></div><h1>Player.java</h1><pre class="source lang-java linenums">package lawnlayer;
+
+import processing.core.PImage;
+import processing.core.PApplet;
+
+<span class="fc" id="L6">enum PlayerStatus {</span>
+<span class="fc" id="L7">    Static,</span>
+<span class="fc" id="L8">    Left,</span>
+<span class="fc" id="L9">    Right,</span>
+<span class="fc" id="L10">    Up,</span>
+<span class="fc" id="L11">    Down</span>
+}
+
+public class Player extends Sprite {
+
+    /**
+     * Player speed set as final value accored to the scaffold
+     */
+    private static final int SPEED = 2;
+
+    /**
+     * Start point of player, will be useful when player got reset
+     */
+    private Point startPoint;
+
+    /**
+     * Player's sprite size (it's 20 accored to the scaffold)
+     */
+    private int spriteSize;
+
+    /**
+     * new status detect the instant direction change from user's input
+     * status will change when player finished move a grid
+     * @see PlayerStatus above on what direction player can go
+     */
+    private PlayerStatus status;
+    private PlayerStatus newStatus;
+
+
+    /**
+     * Constructor for a player, required an image, x, and y position
+     * Default status, and new status is static
+     * @param sprite of the player
+     * @param x coordinate
+     * @param y coordinate
+     */
+    public Player(PImage sprite, int topBarSize, int spriteSize) {
+<span class="fc" id="L48">        super(sprite, 0, topBarSize);</span>
+<span class="fc" id="L49">        this.startPoint = new Point(0, topBarSize);</span>
+<span class="fc" id="L50">        this.spriteSize = spriteSize;</span>
+<span class="fc" id="L51">        this.status = PlayerStatus.Static;</span>
+<span class="fc" id="L52">        this.newStatus = PlayerStatus.Static;</span>
+<span class="fc" id="L53">    }</span>
+
+    /**
+     * draw the player to the screen using PApplet and its current x and y position
+     * @param app main PApplet required to draw
+     */
+    public void draw(PApplet app) {
+<span class="fc" id="L60">        app.image(this.sprite, this.x, this.y);</span>
+<span class="fc" id="L61">    }</span>
+
+    /**
+     * Player reset method, put player at the start point then set status to static
+     */
+    public void reset() {
+<span class="fc" id="L67">        this.setPoint(startPoint);</span>
+<span class="fc" id="L68">        this.status = PlayerStatus.Static;</span>
+<span class="fc" id="L69">        this.newStatus = PlayerStatus.Static;</span>
+<span class="fc" id="L70">    }</span>
+
+    /**
+     * detect user pressing the left key, update newStatus, and move out if current status is static
+     * @param item use to check if player have speed boost
+     */
+    public void pressedLeft(PowerUp item) {
+        // if player will move out of stage, then cancel the action
+<span class="pc bpc" id="L78" title="1 of 2 branches missed.">        if (this.x-SPEED &lt; 0) {</span>
+<span class="nc" id="L79">            return;</span>
+        }
+
+        // get speed multiplier if have item speed boost
+<span class="fc" id="L83">        int multiplier = 1;</span>
+<span class="pc bpc" id="L84" title="3 of 4 branches missed.">        if (item.isActive() &amp;&amp; item.getPowerType() == PowerType.Speed)</span>
+<span class="nc" id="L85">            multiplier = 2;</span>
+
+<span class="fc" id="L87">        this.newStatus = PlayerStatus.Left;</span>
+<span class="pc bpc" id="L88" title="1 of 2 branches missed.">        if (this.status == PlayerStatus.Static) {</span>
+<span class="nc" id="L89">            this.x -= SPEED*multiplier;</span>
+<span class="nc" id="L90">            this.status = this.newStatus;</span>
+        }
+<span class="fc" id="L92">    }</span>
+
+    /**
+     * detect user pressing the right key, update newStatus, and move out if current status is static
+     * @param item use to check if player have speed boost
+     * @param screenWidth to check if player will move out of screen on right size
+     */
+    public void pressedRight(PowerUp item, int screenWidth) {
+        // if player will move out of stage, then cancel the action
+<span class="fc bfc" id="L101" title="All 2 branches covered.">        if (this.x+SPEED+this.spriteSize &gt; screenWidth) {</span>
+<span class="fc" id="L102">            return;</span>
+        }
+        
+        // get speed multiplier if have item speed boost
+<span class="fc" id="L106">        int multiplier = 1;</span>
+<span class="pc bpc" id="L107" title="1 of 4 branches missed.">        if (item.isActive() &amp;&amp; item.getPowerType() == PowerType.Speed)</span>
+<span class="fc" id="L108">            multiplier = 2;</span>
+
+<span class="fc" id="L110">        this.newStatus = PlayerStatus.Right;</span>
+<span class="fc bfc" id="L111" title="All 2 branches covered.">        if (this.status == PlayerStatus.Static) {</span>
+<span class="fc" id="L112">            this.x += SPEED*multiplier;</span>
+<span class="fc" id="L113">            this.status = this.newStatus;</span>
+        }
+<span class="fc" id="L115">    }</span>
+
+    /**
+     * detect user pressing the up key, update newStatus, and move out if current status is static
+     * @param item use to check if player have speed boost
+     */
+    public void pressedUp(PowerUp item) {
+        // if player will move out of stage, then cancel the action
+<span class="fc bfc" id="L123" title="All 2 branches covered.">        if (this.y-SPEED &lt; startPoint.getY()) {</span>
+<span class="fc" id="L124">            return;</span>
+        }
+
+        // get speed multiplier if have item speed boost
+<span class="fc" id="L128">        int multiplier = 1;</span>
+<span class="pc bpc" id="L129" title="3 of 4 branches missed.">        if (item.isActive() &amp;&amp; item.getPowerType() == PowerType.Speed)</span>
+<span class="nc" id="L130">            multiplier = 2;</span>
+
+<span class="fc" id="L132">        this.newStatus = PlayerStatus.Up;</span>
+<span class="pc bpc" id="L133" title="1 of 2 branches missed.">        if (this.status == PlayerStatus.Static) {</span>
+<span class="nc" id="L134">            this.y -= SPEED*multiplier;</span>
+<span class="nc" id="L135">            this.status = this.newStatus;</span>
+        }
+<span class="fc" id="L137">    }</span>
+
+    /**
+     * detect user pressing the down key, update newStatus, and move out if current status is static
+     * @param item use to check if player have speed boost
+     * @param screenHeight check if player will move out of screen on down size
+     */
+    public void pressedDown(PowerUp item, int screenHeight) {
+        // if player will move out of stage, then cancel the action
+<span class="fc bfc" id="L146" title="All 2 branches covered.">        if (this.y+SPEED+this.spriteSize &gt; screenHeight) {</span>
+<span class="fc" id="L147">            return;</span>
+        }
+
+        // get speed multiplier if have item speed boost
+<span class="fc" id="L151">        int multiplier = 1;</span>
+<span class="pc bpc" id="L152" title="3 of 4 branches missed.">        if (item.isActive() &amp;&amp; item.getPowerType() == PowerType.Speed)</span>
+<span class="nc" id="L153">            multiplier = 2;</span>
+
+<span class="fc" id="L155">        this.newStatus = PlayerStatus.Down;</span>
+<span class="fc bfc" id="L156" title="All 2 branches covered.">        if (this.status == PlayerStatus.Static) {</span>
+<span class="fc" id="L157">            this.y += SPEED*multiplier;</span>
+<span class="fc" id="L158">            this.status = this.newStatus;</span>
+        }
+<span class="fc" id="L160">    }</span>
+
+    /**
+     * get next point player on the map grid by predict it using current user input
+     * don't call this function while moving, if you want to get next move on map grid
+     * @return Point of next move
+     */
+    public Point getNextMove() {
+<span class="fc" id="L168">        Point nextMove = new Point(this.x, this.y);</span>
+<span class="fc bfc" id="L169" title="All 2 branches covered.">        if (this.newStatus == PlayerStatus.Left) {</span>
+<span class="fc" id="L170">            nextMove = new Point(this.x-spriteSize, this.y);</span>
+<span class="fc bfc" id="L171" title="All 2 branches covered.">        } else if (this.newStatus == PlayerStatus.Right) {</span>
+<span class="fc" id="L172">            nextMove = new Point(this.x+spriteSize, this.y);</span>
+<span class="fc bfc" id="L173" title="All 2 branches covered.">        } else if (this.newStatus == PlayerStatus.Up) {</span>
+<span class="fc" id="L174">            nextMove = new Point(this.x, this.y-spriteSize);</span>
+<span class="fc bfc" id="L175" title="All 2 branches covered.">        } else if (this.newStatus == PlayerStatus.Down) {</span>
+<span class="fc" id="L176">            nextMove = new Point(this.x, this.y+spriteSize);</span>
+        }
+<span class="fc" id="L178">        return nextMove;</span>
+    }
+
+    /**
+     * update the direction of player if next move if not on the same place
+     * fill the path with grass
+     * place the green path if the place is dirt
+     * @param app
+     * @param place
+     * @param path
+     * @return true if player reach the grass or concrete (use for fill grass on app)
+     */
+    public boolean update(PApplet app, Ground place, Pathway path) {
+<span class="fc" id="L191">        boolean will_fill = false;</span>
+
+        // get next move
+<span class="fc" id="L194">        Point nextMove = this.getNextMove();</span>
+
+        // checking if last path that player just walked is existed
+<span class="fc" id="L197">        boolean able_to_change_direction = true;</span>
+<span class="fc bfc" id="L198" title="All 2 branches covered.">        if (path.getSize() != 0) {</span>
+            // if next move will be the same path that player just walked, then stop the change direction process
+<span class="fc bfc" id="L200" title="All 2 branches covered.">            if (nextMove.isSamePoint(path.getLastestPoint())) {</span>
+<span class="fc" id="L201">                able_to_change_direction = false;</span>
+            }
+        }
+
+        // add path if player walk on dirt, and end path when player reach concrete or grass
+<span class="pc bpc" id="L206" title="1 of 4 branches missed.">        if (place.getGroundType() == GroundType.Concrete || place.getGroundType() == GroundType.Grass) {</span>
+<span class="fc bfc" id="L207" title="All 2 branches covered.">            if (path.getSize() != 0) {</span>
+<span class="fc" id="L208">                path.fillGrass(app);</span>
+<span class="fc" id="L209">                path.clear(); // get rid of all the element inside path array</span>
+<span class="fc" id="L210">                path.clearPropagate();</span>
+<span class="fc" id="L211">                will_fill = true;</span>
+            }
+<span class="pc bpc" id="L213" title="1 of 2 branches missed.">        } else if (place.getGroundType() == GroundType.Dirt) {</span>
+<span class="fc" id="L214">            path.addPoint(place);</span>
+        }
+
+        // stop player if tile is concrete. Otherwise, if dirt then set to greenpath
+<span class="fc bfc" id="L218" title="All 2 branches covered.">        if (place.getGroundType() == GroundType.Concrete) {</span>
+<span class="fc" id="L219">            this.newStatus = PlayerStatus.Static;</span>
+<span class="fc" id="L220">            able_to_change_direction = true; // force to be status static if reach tile preventing bug where player move out of the screen when reach the concrete tile while moving back at the same path</span>
+<span class="pc bpc" id="L221" title="1 of 2 branches missed.">        } else if (place.getGroundType() == GroundType.Dirt) {</span>
+<span class="fc" id="L222">            place.setGroundType(GroundType.GreenPath);</span>
+<span class="fc" id="L223">            place.setSprite(app.loadImage(&quot;src/main/resources/lawnlayer/greenPath.png&quot;));</span>
+        }
+
+        // change real player status
+<span class="fc bfc" id="L227" title="All 2 branches covered.">        if (able_to_change_direction) {</span>
+<span class="fc" id="L228">            this.status = this.newStatus;</span>
+        }
+
+<span class="fc" id="L231">        return will_fill;</span>
+    }
+
+    /**
+     * move the player method (done after update direction)
+     * @param item use to check if player have speed boost
+     */
+    public void move(PowerUp item) {
+        // get speed multiplier if have item speed boost
+<span class="fc" id="L240">        int multiplier = 1;</span>
+<span class="pc bpc" id="L241" title="1 of 4 branches missed.">        if (item.isActive() &amp;&amp; item.getPowerType() == PowerType.Speed)</span>
+<span class="fc" id="L242">            multiplier = 2;</span>
+
+        // move the player accored to current direction
+<span class="fc bfc" id="L245" title="All 2 branches covered.">        if (this.status == PlayerStatus.Left) {</span>
+<span class="fc" id="L246">            this.x -= SPEED*multiplier;</span>
+<span class="fc bfc" id="L247" title="All 2 branches covered.">        } else if (this.status == PlayerStatus.Right) {</span>
+<span class="fc" id="L248">            this.x += SPEED*multiplier;</span>
+<span class="pc bpc" id="L249" title="1 of 2 branches missed.">        } else if (this.status == PlayerStatus.Up) {</span>
+<span class="nc" id="L250">            this.y -= SPEED*multiplier;</span>
+<span class="fc bfc" id="L251" title="All 2 branches covered.">        } else if (this.status == PlayerStatus.Down) {</span>
+<span class="fc" id="L252">            this.y += SPEED*multiplier;</span>
+        }
+<span class="fc" id="L254">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

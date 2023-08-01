@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Enemy.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">lawnlayer</a> &gt; <a href="index.source.html" class="el_package">lawnlayer</a> &gt; <span class="el_source">Enemy.java</span></div><h1>Enemy.java</h1><pre class="source lang-java linenums">package lawnlayer;
+
+import java.util.Random;
+
+import processing.core.PImage;
+import processing.core.PApplet;
+
+<span class="fc" id="L8">enum EnemyType {</span>
+<span class="fc" id="L9">    Worm,</span>
+<span class="fc" id="L10">    Beetle</span>
+}
+
+public class Enemy extends Sprite {
+    
+    /**
+     * Enemy speed set as final value accored to the scaffold
+     */
+    private static final int SPEED = 2;
+
+    /**
+     * Enemy have different type in the game
+     * @see EnemyType above
+     */
+    private EnemyType type;
+
+    /**
+     * the sprite size of an enemy
+     */
+    private int spriteSize;
+    
+    /**
+     * direction of an enemy
+     */
+    private boolean goLeft;
+    private boolean goUp;
+
+    /**
+     * Initialise enemy by
+     * @param sprite set enemy image shown on screen
+     * @param size collect size of enemy
+     * @param p spawn point of an enemy
+     * @param type of an enemy
+     */
+    public Enemy(PImage sprite, int size, Point p, EnemyType type) {
+<span class="fc" id="L45">        super(sprite, p.getX(), p.getY());</span>
+<span class="fc" id="L46">        this.type = type;</span>
+<span class="fc" id="L47">        this.spriteSize = size;</span>
+<span class="fc" id="L48">        this.goLeft = new Random().nextBoolean();</span>
+<span class="fc" id="L49">        this.goUp = new Random().nextBoolean();</span>
+<span class="fc" id="L50">    }</span>
+
+    public Enemy(PImage sprite, int size, Point p, EnemyType type, boolean goLeft, boolean goUp) {
+<span class="fc" id="L53">        super(sprite, p.getX(), p.getY());</span>
+<span class="fc" id="L54">        this.type = type;</span>
+<span class="fc" id="L55">        this.spriteSize = size;</span>
+<span class="fc" id="L56">        this.goLeft = goLeft;</span>
+<span class="fc" id="L57">        this.goUp = goUp;</span>
+<span class="fc" id="L58">    }</span>
+
+    /**
+     * draw the enemy to the screen using PApplet and its current x and y position
+     * @param app main PApplet required to draw
+     */
+    public void draw(PApplet app) {
+<span class="fc" id="L65">        app.image(this.sprite, this.x, this.y);</span>
+<span class="fc" id="L66">    }</span>
+
+    /**
+     * getter method for enemy type
+     * @return type of enemy
+     */
+    public EnemyType getType() {
+<span class="fc" id="L73">        return this.type;</span>
+    }
+
+    /**
+     * getter method for enemy sprite size
+     * @return size of sprite
+     */
+    public int getSpriteSize() {
+<span class="fc" id="L81">        return this.spriteSize;</span>
+    }
+
+    /**
+     * Enemy move diagonal direction
+     */
+    public void move() {
+<span class="fc bfc" id="L88" title="All 2 branches covered.">        if (this.goLeft) {</span>
+<span class="fc" id="L89">            this.x -= SPEED;</span>
+        } else {
+<span class="fc" id="L91">            this.x += SPEED;</span>
+        }
+
+<span class="fc bfc" id="L94" title="All 2 branches covered.">        if (this.goUp) {</span>
+<span class="fc" id="L95">            this.y -= SPEED;</span>
+        } else {
+<span class="fc" id="L97">            this.y += SPEED;</span>
+        }
+<span class="fc" id="L99">    }</span>
+
+    /**
+     * getter method for X direction of an enemy
+     * @return true if enemy is going left, false if going right
+     */
+    public boolean isGoLeft() {
+<span class="fc" id="L106">        return this.goLeft;</span>
+    }
+
+    /**
+     * change the X direction to the opposite direction
+     */
+    public void changeXdirection() {
+<span class="fc bfc" id="L113" title="All 2 branches covered.">        this.goLeft = !this.goLeft;</span>
+<span class="fc" id="L114">    }</span>
+
+    /**
+     * getter method for Y direction of an enemy
+     * @return true if enemy is going Up, false if going Down
+     */
+    public boolean isGoUp() {
+<span class="fc" id="L121">        return this.goUp;</span>
+    }
+
+    /**
+     * change the Y direction to the opposite direction
+     */
+    public void changeYdirection() {
+<span class="fc bfc" id="L128" title="All 2 branches covered.">        this.goUp = !this.goUp;</span>
+<span class="fc" id="L129">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

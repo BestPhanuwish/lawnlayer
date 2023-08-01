@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="lawnlayer.LevelTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2022-05-04T13:41:27" hostname="192-168-1-106.tpgi.com.au" time="0.417">
+  <properties/>
+  <testcase name="Getter method for level progress goal" classname="lawnlayer.LevelTest" time="0.1"/>
+  <testcase name="Simple Level setup test" classname="lawnlayer.LevelTest" time="0.066"/>
+  <testcase name="Getter method for level outlay name" classname="lawnlayer.LevelTest" time="0.049"/>
+  <testcase name="Getter method for level enemies data" classname="lawnlayer.LevelTest" time="0.05"/>
+  <testcase name="Setter method for level progress goal" classname="lawnlayer.LevelTest" time="0.036"/>
+  <testcase name="Setter method for level enemies data" classname="lawnlayer.LevelTest" time="0.061"/>
+  <testcase name="Setter method for level outlay name" classname="lawnlayer.LevelTest" time="0.051"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

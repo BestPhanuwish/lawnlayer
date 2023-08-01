@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PowerUp.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">lawnlayer</a> &gt; <a href="index.source.html" class="el_package">lawnlayer</a> &gt; <span class="el_source">PowerUp.java</span></div><h1>PowerUp.java</h1><pre class="source lang-java linenums">package lawnlayer;
+
+import java.util.Random;
+
+import processing.core.PApplet;
+import processing.core.PImage;
+
+/**
+ * There are 3 different item in the game and it have constructor (make it easy to manage than GroundType enum)
+ */
+<span class="fc" id="L11">enum PowerType {</span>
+<span class="fc" id="L12">    Barrier(&quot;Barrier&quot;, &quot;src/main/resources/lawnlayer/barrier.png&quot;),</span>
+<span class="fc" id="L13">    Speed(&quot;Speed&quot;, &quot;src/main/resources/lawnlayer/speed.png&quot;),</span>
+<span class="fc" id="L14">    Freeze(&quot;Freeze&quot;, &quot;src/main/resources/lawnlayer/freeze.png&quot;);</span>
+
+    /**
+     * name of power up (will use to display on GUI)
+     */
+    private String name;
+
+    /**
+     * sprite file soruce string will use to load image on PApplet
+     */
+    private String sprite;
+
+    /**
+     * PowerType constructor each need name and its file source name
+     * @param name
+     * @param sprite
+     */
+<span class="fc" id="L31">    private PowerType(String name, String sprite) {</span>
+<span class="fc" id="L32">        this.name = name;</span>
+<span class="fc" id="L33">        this.sprite = sprite;</span>
+<span class="fc" id="L34">    }</span>
+
+    /**
+     * get name of power up
+     * @return name
+     */
+    public String gerName() {
+<span class="fc" id="L41">        return this.name;</span>
+    }
+
+    /**
+     * get sprite sorce of the power up
+     * @return sprite file name
+     */
+    public String gerSprite() {
+<span class="fc" id="L49">        return this.sprite;</span>
+    }
+
+    /**
+    * Pick a random value of the PowerType enum.
+    * @return a random PowerType.
+    */
+    public static PowerType getRandomType() {
+<span class="fc" id="L57">        Random random = new Random();</span>
+<span class="fc" id="L58">        return values()[random.nextInt(values().length)];</span>
+    }
+}
+
+public class PowerUp extends Sprite {
+    
+    /**
+     * Power type of the current power up
+     */
+    private PowerType type;
+
+    /**
+     * the item will active for only 10 second accorded to the scaffold
+     */
+    private boolean active;
+    private static final int active_last = 600; // 600 frame mean 10 second
+    private int active_timer;
+
+    /**
+     * the item will wait for random time before spawn again
+     */
+    private boolean available;
+    private int available_last;
+    private int available_timer;
+
+    /**
+     * Create Power up once the game is load in
+     * @param sprite of the power up
+     * @param p position point of the power up (will be random)
+     * @param wait_until_available wait time until available to pick and see, accorded to the scaffold the item will need to wait for 10 second before appear when player just join in the game
+     */
+    public PowerUp(PImage sprite, Point p, int wait_until_available) {
+<span class="fc" id="L90">        super(sprite, p.x, p.y);</span>
+<span class="fc" id="L91">        this.active = false;</span>
+<span class="fc" id="L92">        this.active_timer = 0;</span>
+<span class="fc" id="L93">        this.available = false;</span>
+<span class="fc" id="L94">        this.available_last = wait_until_available;</span>
+<span class="fc" id="L95">        this.available_timer = 0;</span>
+<span class="fc" id="L96">    }</span>
+
+    /**
+     * check whether the player will collecting an item
+     * if collect then the item will be active and unavailable
+     * @param player
+     */
+    public void collectItem(Player player) {
+<span class="fc bfc" id="L104" title="All 2 branches covered.">        if (this.isSamePoint(player)) {</span>
+<span class="fc" id="L105">            active = true;</span>
+<span class="fc" id="L106">            available = false;</span>
+        }
+<span class="fc" id="L108">    }</span>
+
+    /**
+     * set the power up to new type and load image using app accorded to new type
+     * @param app
+     * @param type
+     */
+    public void setPowerUpType(PApplet app, PowerType type) {
+<span class="fc" id="L116">        this.type = type;</span>
+<span class="fc" id="L117">        this.setSprite(app.loadImage(this.type.gerSprite()));</span>
+<span class="fc" id="L118">    }</span>
+
+    /**
+     * set active
+     * @param active
+     */
+    public void setActive(boolean active) {
+<span class="fc" id="L125">        this.active = active;</span>
+<span class="fc" id="L126">    }</span>
+
+    /**
+     * check whether the item is still active
+     * @return true if active
+     */
+    public boolean isActive() {
+<span class="fc" id="L133">        return this.active;</span>
+    }
+
+    /**
+     * check whether the item is available to collect
+     * @return true if available
+     */
+    public boolean isAvailable() {
+<span class="fc" id="L141">        return this.available;</span>
+    }
+
+    /**
+     * get the how many times left for item to be active in second to show on GUI
+     * @return time left in second
+     */
+    public int getTimeLeft() {
+<span class="fc" id="L149">        return (int) Math.ceil((double) (active_last/60) - (double) (active_timer/60));</span>
+    }
+
+    /**
+     * get the type of current power up
+     * @return PowerType
+     */
+    public PowerType getPowerType() {
+<span class="fc" id="L157">        return this.type;</span>
+    }
+
+    /**
+     * get the name of current power up
+     * @return name
+     */
+    public String getPowerName() {
+<span class="fc" id="L165">        return this.type.gerName();</span>
+    }
+
+    /**
+     * this method will run every frame
+     * to update status of power up on the game
+     * @param app to load power up sprite
+     * @param p to place the power up to specific point (should be in the map grid and only on dirt Ground)
+     */
+    public void tick(PApplet app, Point p) {
+<span class="fc bfc" id="L175" title="All 2 branches covered.">        if (active) {</span>
+            // if still active then run until it reach the active time left
+<span class="fc" id="L177">            active_timer += 1;</span>
+<span class="fc bfc" id="L178" title="All 2 branches covered.">            if (active_timer &gt;= active_last) {</span>
+                // item unactivate
+<span class="fc" id="L180">                active = false;</span>
+<span class="fc" id="L181">                active_timer = 0;</span>
+
+                // reset the item
+<span class="fc" id="L184">                this.setPowerUpType(app, PowerType.getRandomType());</span>
+<span class="fc" id="L185">                this.setPoint(p);</span>
+            }
+        } else {
+            // if item is not active then wait until it's available
+<span class="fc bfc" id="L189" title="All 2 branches covered.">            if (!available) {</span>
+<span class="fc" id="L190">                available_timer += 1;</span>
+<span class="fc bfc" id="L191" title="All 2 branches covered.">                if (available_timer &gt;= available_last) {</span>
+<span class="fc" id="L192">                    available = true;</span>
+<span class="fc" id="L193">                    available_timer = 0;</span>
+<span class="fc" id="L194">                    available_last = (new Random().nextInt(10)) * 60; // set random wait time within 10 second</span>
+                }
+            }
+        }
+<span class="fc" id="L198">    }</span>
+
+    /**
+     * if item is available to collect the display it visually
+     * @param app to draw power up on screen
+     */
+    public void draw(PApplet app) {
+<span class="pc bpc" id="L205" title="1 of 2 branches missed.">        if (available)</span>
+<span class="nc" id="L206">            app.image(this.sprite, this.x, this.y);</span>
+<span class="fc" id="L207">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

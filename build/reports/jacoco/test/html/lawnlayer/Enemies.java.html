@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Enemies.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">lawnlayer</a> &gt; <a href="index.source.html" class="el_package">lawnlayer</a> &gt; <span class="el_source">Enemies.java</span></div><h1>Enemies.java</h1><pre class="source lang-java linenums">package lawnlayer;
+
+import java.util.ArrayList;
+import java.util.Random;
+
+import processing.core.PApplet;
+import processing.core.PImage;
+import processing.data.JSONArray;
+
+<span class="fc" id="L10">public class Enemies {</span>
+    
+    /**
+     * Array contains Enemy object inside
+     */
+<span class="fc" id="L15">    private ArrayList&lt;Enemy&gt; enemies = new ArrayList&lt;Enemy&gt;();</span>
+
+    /**
+     * getter method for enemies array
+     * @return enemies array of Enemy
+     */
+    public ArrayList&lt;Enemy&gt; getEnemiesArray() {
+<span class="fc" id="L22">        return this.enemies;</span>
+    }
+
+
+    /**
+     * Load the enemies from JSON data to Enemy object array
+     * @param app to draw enemy sprite
+     * @param enemies enemies JSON array data
+     * @param map put enemy on certain place on the map
+     * @param spriteSize Enemy object need sprite size
+     */
+    public void loadEnemies(PApplet app, JSONArray enemies, Map map, int spriteSize) {
+        // clear all the Enemy when load new Enemies
+<span class="fc" id="L35">        this.enemies.clear();</span>
+
+        // Loop throught the enemies JSON array data
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        for (int i=0; i&lt;enemies.size(); i++) {</span>
+
+            // get the spawn point of the enemy by convert String to Point
+            Point spawnPoint;
+<span class="fc" id="L42">            String spawn = enemies.getJSONObject(i).getString(&quot;spawn&quot;);</span>
+            
+<span class="pc bpc" id="L44" title="1 of 2 branches missed.">            if (spawn.equals(&quot;random&quot;)) {</span>
+                // if the spawn is random then loop until get the dirt place on map
+                while (true) {
+<span class="fc" id="L47">                    Ground[][] space = map.getMapGrid();</span>
+<span class="fc" id="L48">                    Ground[] spaceRow = space[new Random().nextInt(space.length)];</span>
+<span class="fc" id="L49">                    Ground place = spaceRow[new Random().nextInt(space.length)];</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">                    if (place.getGroundType() == GroundType.Concrete) {</span>
+<span class="fc" id="L51">                        continue;</span>
+                    } else {
+<span class="fc" id="L53">                        spawnPoint = new Point(place.getX(), place.getY());</span>
+<span class="fc" id="L54">                        break;</span>
+                    }
+                }
+            } else {
+                // if spawn specified by coordinate [row,column] then set the point to specific row and column of the map
+<span class="nc" id="L59">                String[] coorArray = spawn.split(&quot;,&quot;);</span>
+<span class="nc" id="L60">                int coorY = Integer.parseInt(coorArray[0]);</span>
+<span class="nc" id="L61">                int coorX = Integer.parseInt(coorArray[1]);</span>
+<span class="nc" id="L62">                Ground[][] space = map.getMapGrid();</span>
+<span class="nc" id="L63">                spawnPoint = new Point(space[coorY][coorX].getX(), space[coorY][coorX].getY());</span>
+            }
+
+            // set the type of enemy and its sprite image
+<span class="fc" id="L67">            int type = enemies.getJSONObject(i).getInt(&quot;type&quot;);</span>
+            EnemyType typeEnemy;
+            PImage sprite;
+<span class="fc bfc" id="L70" title="All 2 branches covered.">            if (type == 0) {</span>
+<span class="fc" id="L71">                sprite = app.loadImage(&quot;src/main/resources/lawnlayer/worm.png&quot;);</span>
+<span class="fc" id="L72">                typeEnemy = EnemyType.Worm;</span>
+            } else {
+<span class="fc" id="L74">                sprite = app.loadImage(&quot;src/main/resources/lawnlayer/beetle.png&quot;);</span>
+<span class="fc" id="L75">                typeEnemy = EnemyType.Beetle;</span>
+            }
+
+            // add new Enemy object to enemies array
+<span class="fc" id="L79">            this.enemies.add(new Enemy(sprite, spriteSize, spawnPoint, typeEnemy));</span>
+        }
+<span class="fc" id="L81">    }</span>
+
+    public void update(PApplet app, Map map, Pathway path) throws Exception {
+<span class="fc bfc" id="L84" title="All 2 branches covered.">        for (Enemy enemy : this.enemies) {</span>
+
+<span class="fc bfc" id="L86" title="All 2 branches covered.">            if (enemy.isGoLeft()) {</span>
+<span class="fc" id="L87">                boolean will_change_direction = false;</span>
+
+<span class="fc" id="L89">                Point p1 = new Point(enemy.getX(), enemy.getY());</span>
+<span class="fc" id="L90">                Point p2 = new Point(enemy.getX(), enemy.getY()+enemy.getSpriteSize());</span>
+
+<span class="fc bfc" id="L92" title="All 4 branches covered.">                if (map.getGroundFromPoint(p1).isHittableGround() &amp;&amp; map.getGroundFromPoint(p2).isHittableGround()) {</span>
+<span class="fc" id="L93">                    will_change_direction = true;</span>
+                }
+
+<span class="pc bpc" id="L96" title="1 of 4 branches missed.">                if (map.getGroundFromPoint(p1).isHittableGround() &amp;&amp; map.getGroundFromPoint(p1).getX()+enemy.getSpriteSize() == enemy.getX()) {</span>
+<span class="nc" id="L97">                    will_change_direction = true;</span>
+                }
+
+<span class="pc bpc" id="L100" title="1 of 4 branches missed.">                if (map.getGroundFromPoint(p2).isHittableGround() &amp;&amp; map.getGroundFromPoint(p2).getX()+enemy.getSpriteSize() == enemy.getX()) {</span>
+<span class="nc" id="L101">                    will_change_direction = true;</span>
+                }
+
+<span class="fc bfc" id="L104" title="All 2 branches covered.">                if (will_change_direction) {</span>
+<span class="fc" id="L105">                    enemy.changeXdirection();</span>
+<span class="pc bpc" id="L106" title="1 of 2 branches missed.">                    if (map.getGroundFromPoint(p1).getGroundType() == GroundType.GreenPath) {</span>
+<span class="nc" id="L107">                        path.createPropagate(map.getGroundFromPoint(p1));</span>
+<span class="nc" id="L108">                        map.getGroundFromPoint(p1).setGroundType(GroundType.RedPath);</span>
+<span class="nc" id="L109">                        map.getGroundFromPoint(p1).setSprite(app.loadImage(&quot;src/main/resources/lawnlayer/redPath.png&quot;));</span>
+<span class="pc bpc" id="L110" title="1 of 2 branches missed.">                    } else if (map.getGroundFromPoint(p2).getGroundType() == GroundType.GreenPath) {</span>
+<span class="nc" id="L111">                        path.createPropagate(map.getGroundFromPoint(p2));</span>
+<span class="nc" id="L112">                        map.getGroundFromPoint(p2).setGroundType(GroundType.RedPath);</span>
+<span class="nc" id="L113">                        map.getGroundFromPoint(p2).setSprite(app.loadImage(&quot;src/main/resources/lawnlayer/redPath.png&quot;));</span>
+                    }
+
+                    // if enemy is beetle and touching grass then change grass to dirt
+<span class="pc bpc" id="L117" title="1 of 2 branches missed.">                    if (enemy.getType() == EnemyType.Beetle) {</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">                        if (map.getGroundFromPoint(p1).getGroundType() == GroundType.Grass) {</span>
+<span class="nc" id="L119">                            map.getGroundFromPoint(p1).setGroundType(GroundType.Dirt);</span>
+<span class="nc" id="L120">                            map.getGroundFromPoint(p1).setSprite(null);</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">                        } else if (map.getGroundFromPoint(p2).getGroundType() == GroundType.Grass) {</span>
+<span class="nc" id="L122">                            map.getGroundFromPoint(p1).setGroundType(GroundType.Dirt);</span>
+<span class="nc" id="L123">                            map.getGroundFromPoint(p1).setSprite(null);</span>
+                        }
+                    }
+                }
+<span class="fc" id="L127">            } else {</span>
+<span class="fc" id="L128">                boolean will_change_direction = false;</span>
+
+<span class="fc" id="L130">                Point p1 = new Point(enemy.getX()+enemy.getSpriteSize(), enemy.getY());</span>
+<span class="fc" id="L131">                Point p2 = new Point(enemy.getX()+enemy.getSpriteSize(), enemy.getY()+enemy.getSpriteSize());</span>
+
+<span class="pc bpc" id="L133" title="3 of 4 branches missed.">                if (map.getGroundFromPoint(p1).isHittableGround() &amp;&amp; map.getGroundFromPoint(p2).isHittableGround()) {</span>
+<span class="nc" id="L134">                    will_change_direction = true;</span>
+                }
+
+<span class="pc bpc" id="L137" title="3 of 4 branches missed.">                if (map.getGroundFromPoint(p1).isHittableGround() &amp;&amp; map.getGroundFromPoint(p1).getX() == enemy.getX()) {</span>
+<span class="nc" id="L138">                    will_change_direction = true;</span>
+                }
+
+<span class="pc bpc" id="L141" title="1 of 4 branches missed.">                if (map.getGroundFromPoint(p2).isHittableGround() &amp;&amp; map.getGroundFromPoint(p2).getX() == enemy.getX()) {</span>
+<span class="nc" id="L142">                    will_change_direction = true;</span>
+                }
+
+<span class="pc bpc" id="L145" title="1 of 2 branches missed.">                if (will_change_direction) {</span>
+<span class="nc" id="L146">                    enemy.changeXdirection();</span>
+<span class="nc bnc" id="L147" title="All 2 branches missed.">                    if (map.getGroundFromPoint(p1).getGroundType() == GroundType.GreenPath) {</span>
+<span class="nc" id="L148">                        path.createPropagate(map.getGroundFromPoint(p1));</span>
+<span class="nc" id="L149">                        map.getGroundFromPoint(p1).setGroundType(GroundType.RedPath);</span>
+<span class="nc" id="L150">                        map.getGroundFromPoint(p1).setSprite(app.loadImage(&quot;src/main/resources/lawnlayer/redPath.png&quot;));</span>
+<span class="nc bnc" id="L151" title="All 2 branches missed.">                    } else if (map.getGroundFromPoint(p2).getGroundType() == GroundType.GreenPath) {</span>
+<span class="nc" id="L152">                        path.createPropagate(map.getGroundFromPoint(p2));</span>
+<span class="nc" id="L153">                        map.getGroundFromPoint(p2).setGroundType(GroundType.RedPath);</span>
+<span class="nc" id="L154">                        map.getGroundFromPoint(p2).setSprite(app.loadImage(&quot;src/main/resources/lawnlayer/redPath.png&quot;));</span>
+                    }
+
+                    // if enemy is beetle and touching grass then change grass to dirt
+<span class="nc bnc" id="L158" title="All 2 branches missed.">                    if (enemy.getType() == EnemyType.Beetle) {</span>
+<span class="nc bnc" id="L159" title="All 2 branches missed.">                        if (map.getGroundFromPoint(p1).getGroundType() == GroundType.Grass) {</span>
+<span class="nc" id="L160">                            map.getGroundFromPoint(p1).setGroundType(GroundType.Dirt);</span>
+<span class="nc" id="L161">                            map.getGroundFromPoint(p1).setSprite(null);</span>
+<span class="nc bnc" id="L162" title="All 2 branches missed.">                        } else if (map.getGroundFromPoint(p2).getGroundType() == GroundType.Grass) {</span>
+<span class="nc" id="L163">                            map.getGroundFromPoint(p1).setGroundType(GroundType.Dirt);</span>
+<span class="nc" id="L164">                            map.getGroundFromPoint(p1).setSprite(null);</span>
+                        }
+                    }
+                }
+            }
+
+<span class="fc bfc" id="L170" title="All 2 branches covered.">            if (enemy.isGoUp()) {</span>
+<span class="fc" id="L171">                boolean will_change_direction = false;</span>
+
+<span class="fc" id="L173">                Point p1 = new Point(enemy.getX(), enemy.getY());</span>
+<span class="fc" id="L174">                Point p2 = new Point(enemy.getX()+enemy.getSpriteSize(), enemy.getY());</span>
+
+<span class="pc bpc" id="L176" title="3 of 4 branches missed.">                if (map.getGroundFromPoint(p1).isHittableGround() &amp;&amp; map.getGroundFromPoint(p2).isHittableGround()) {</span>
+<span class="nc" id="L177">                    will_change_direction = true;</span>
+                }
+
+<span class="pc bpc" id="L180" title="3 of 4 branches missed.">                if (map.getGroundFromPoint(p1).isHittableGround() &amp;&amp; map.getGroundFromPoint(p1).getY()+enemy.getSpriteSize() == enemy.getY()) {</span>
+<span class="nc" id="L181">                    will_change_direction = true;</span>
+                }
+
+<span class="pc bpc" id="L184" title="3 of 4 branches missed.">                if (map.getGroundFromPoint(p2).isHittableGround() &amp;&amp; map.getGroundFromPoint(p2).getY()+enemy.getSpriteSize() == enemy.getY()) {</span>
+<span class="nc" id="L185">                    will_change_direction = true;</span>
+                }
+
+<span class="pc bpc" id="L188" title="1 of 2 branches missed.">                if (will_change_direction) {</span>
+<span class="nc" id="L189">                    enemy.changeYdirection();</span>
+<span class="nc bnc" id="L190" title="All 2 branches missed.">                    if (map.getGroundFromPoint(p1).getGroundType() == GroundType.GreenPath) {</span>
+<span class="nc" id="L191">                        path.createPropagate(map.getGroundFromPoint(p1));</span>
+<span class="nc" id="L192">                        map.getGroundFromPoint(p1).setGroundType(GroundType.RedPath);</span>
+<span class="nc" id="L193">                        map.getGroundFromPoint(p1).setSprite(app.loadImage(&quot;src/main/resources/lawnlayer/redPath.png&quot;));</span>
+<span class="nc bnc" id="L194" title="All 2 branches missed.">                    } else if (map.getGroundFromPoint(p2).getGroundType() == GroundType.GreenPath) {</span>
+<span class="nc" id="L195">                        path.createPropagate(map.getGroundFromPoint(p2));</span>
+<span class="nc" id="L196">                        map.getGroundFromPoint(p2).setGroundType(GroundType.RedPath);</span>
+<span class="nc" id="L197">                        map.getGroundFromPoint(p2).setSprite(app.loadImage(&quot;src/main/resources/lawnlayer/redPath.png&quot;));</span>
+                    }
+
+                    // if enemy is beetle and touching grass then change grass to dirt
+<span class="nc bnc" id="L201" title="All 2 branches missed.">                    if (enemy.getType() == EnemyType.Beetle) {</span>
+<span class="nc bnc" id="L202" title="All 2 branches missed.">                        if (map.getGroundFromPoint(p1).getGroundType() == GroundType.Grass) {</span>
+<span class="nc" id="L203">                            map.getGroundFromPoint(p1).setGroundType(GroundType.Dirt);</span>
+<span class="nc" id="L204">                            map.getGroundFromPoint(p1).setSprite(null);</span>
+<span class="nc bnc" id="L205" title="All 2 branches missed.">                        } else if (map.getGroundFromPoint(p2).getGroundType() == GroundType.Grass) {</span>
+<span class="nc" id="L206">                            map.getGroundFromPoint(p1).setGroundType(GroundType.Dirt);</span>
+<span class="nc" id="L207">                            map.getGroundFromPoint(p1).setSprite(null);</span>
+                        }
+                    }
+                }
+<span class="fc" id="L211">            } else {</span>
+<span class="fc" id="L212">                boolean will_change_direction = false;</span>
+
+<span class="fc" id="L214">                Point p1 = new Point(enemy.getX(), enemy.getY()+enemy.getSpriteSize());</span>
+<span class="fc" id="L215">                Point p2 = new Point(enemy.getX()+enemy.getSpriteSize(), enemy.getY()+enemy.getSpriteSize());</span>
+
+<span class="fc bfc" id="L217" title="All 4 branches covered.">                if (map.getGroundFromPoint(p1).isHittableGround() &amp;&amp; map.getGroundFromPoint(p2).isHittableGround()) {</span>
+<span class="fc" id="L218">                    will_change_direction = true;</span>
+                }
+
+<span class="pc bpc" id="L221" title="1 of 4 branches missed.">                if (map.getGroundFromPoint(p1).isHittableGround() &amp;&amp; map.getGroundFromPoint(p1).getY() == enemy.getY()) {</span>
+<span class="nc" id="L222">                    will_change_direction = true;</span>
+                }
+
+<span class="pc bpc" id="L225" title="1 of 4 branches missed.">                if (map.getGroundFromPoint(p2).isHittableGround() &amp;&amp; map.getGroundFromPoint(p2).getY() == enemy.getY()) {</span>
+<span class="nc" id="L226">                    will_change_direction = true;</span>
+                }
+
+<span class="fc bfc" id="L229" title="All 2 branches covered.">                if (will_change_direction) {</span>
+<span class="fc" id="L230">                    enemy.changeYdirection();</span>
+<span class="pc bpc" id="L231" title="1 of 2 branches missed.">                    if (map.getGroundFromPoint(p1).getGroundType() == GroundType.GreenPath) {</span>
+<span class="nc" id="L232">                        path.createPropagate(map.getGroundFromPoint(p1));</span>
+<span class="nc" id="L233">                        map.getGroundFromPoint(p1).setGroundType(GroundType.RedPath);</span>
+<span class="nc" id="L234">                        map.getGroundFromPoint(p1).setSprite(app.loadImage(&quot;src/main/resources/lawnlayer/redPath.png&quot;));</span>
+<span class="pc bpc" id="L235" title="1 of 2 branches missed.">                    } else if (map.getGroundFromPoint(p2).getGroundType() == GroundType.GreenPath) {</span>
+<span class="nc" id="L236">                        path.createPropagate(map.getGroundFromPoint(p2));</span>
+<span class="nc" id="L237">                        map.getGroundFromPoint(p2).setGroundType(GroundType.RedPath);</span>
+<span class="nc" id="L238">                        map.getGroundFromPoint(p2).setSprite(app.loadImage(&quot;src/main/resources/lawnlayer/redPath.png&quot;));</span>
+                    }
+
+                    // if enemy is beetle and touching grass then change grass to dirt
+<span class="pc bpc" id="L242" title="1 of 2 branches missed.">                    if (enemy.getType() == EnemyType.Beetle) {</span>
+<span class="nc bnc" id="L243" title="All 2 branches missed.">                        if (map.getGroundFromPoint(p1).getGroundType() == GroundType.Grass) {</span>
+<span class="nc" id="L244">                            map.getGroundFromPoint(p1).setGroundType(GroundType.Dirt);</span>
+<span class="nc" id="L245">                            map.getGroundFromPoint(p1).setSprite(null);</span>
+<span class="nc bnc" id="L246" title="All 2 branches missed.">                        } else if (map.getGroundFromPoint(p2).getGroundType() == GroundType.Grass) {</span>
+<span class="nc" id="L247">                            map.getGroundFromPoint(p1).setGroundType(GroundType.Dirt);</span>
+<span class="nc" id="L248">                            map.getGroundFromPoint(p1).setSprite(null);</span>
+                        }
+                    }
+                }
+            }
+
+<span class="fc" id="L254">        }</span>
+<span class="fc" id="L255">    }</span>
+
+    /**
+     * Move all the Enemy if it's not freeze
+     * @param item check if enemy allow to move
+     */
+    public void move(PowerUp item) {
+<span class="pc bpc" id="L262" title="3 of 4 branches missed.">        if (item.isActive() &amp;&amp; item.getPowerType() == PowerType.Freeze)</span>
+<span class="nc" id="L263">            return;</span>
+
+<span class="fc bfc" id="L265" title="All 2 branches covered.">        for (Enemy e : this.enemies) {</span>
+<span class="fc" id="L266">            e.move();</span>
+<span class="fc" id="L267">        }</span>
+<span class="fc" id="L268">    }</span>
+
+    /**
+     * Draw all the Enemy on to the screen
+     */
+    public void draw(PApplet app) {
+<span class="fc bfc" id="L274" title="All 2 branches covered.">        for (Enemy e : this.enemies) {</span>
+<span class="fc" id="L275">            e.draw(app);</span>
+<span class="fc" id="L276">        }</span>
+<span class="fc" id="L277">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="lawnlayer.SpriteTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2022-05-04T13:41:29" hostname="192-168-1-106.tpgi.com.au" time="0.24">
+  <properties/>
+  <testcase name="Simple sprite set up" classname="lawnlayer.SpriteTest" time="0.078"/>
+  <testcase name="Getter method" classname="lawnlayer.SpriteTest" time="0.092"/>
+  <testcase name="Setter method" classname="lawnlayer.SpriteTest" time="0.069"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="lawnlayer.PowerUpTest" tests="13" skipped="0" failures="0" errors="0" timestamp="2022-05-04T13:41:28" hostname="192-168-1-106.tpgi.com.au" time="0.986">
+  <properties/>
+  <testcase name="Tick method for 10-20 second" classname="lawnlayer.PowerUpTest" time="0.056"/>
+  <testcase name="Getter method for available" classname="lawnlayer.PowerUpTest" time="0.064"/>
+  <testcase name="Simple scanerio Tick method that will run every frame" classname="lawnlayer.PowerUpTest" time="0.06"/>
+  <testcase name="Setter and Getter method for power up type" classname="lawnlayer.PowerUpTest" time="0.091"/>
+  <testcase name="Getter method for active" classname="lawnlayer.PowerUpTest" time="0.081"/>
+  <testcase name="Get random power up type enum method" classname="lawnlayer.PowerUpTest" time="0.047"/>
+  <testcase name="Tick method for 10 second then got collect after 2 second then check after 5 second and check again after it available" classname="lawnlayer.PowerUpTest" time="0.106"/>
+  <testcase name="Getter method for power up source file name" classname="lawnlayer.PowerUpTest" time="0.061"/>
+  <testcase name="Getter method for power up name" classname="lawnlayer.PowerUpTest" time="0.109"/>
+  <testcase name="Player collect item method, with active getter method check again" classname="lawnlayer.PowerUpTest" time="0.059"/>
+  <testcase name="Player collect item method, but player is not on same point as item" classname="lawnlayer.PowerUpTest" time="0.08"/>
+  <testcase name="Existence check" classname="lawnlayer.PowerUpTest" time="0.09"/>
+  <testcase name="Tick method for 10 second then got collect after that" classname="lawnlayer.PowerUpTest" time="0.078"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

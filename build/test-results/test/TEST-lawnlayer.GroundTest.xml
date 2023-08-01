@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="lawnlayer.GroundTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2022-05-04T13:41:26" hostname="192-168-1-106.tpgi.com.au" time="0.196">
+  <properties/>
+  <testcase name="isHittableGround method simple check" classname="lawnlayer.GroundTest" time="0.047"/>
+  <testcase name="Existence check" classname="lawnlayer.GroundTest" time="0.051"/>
+  <testcase name="getter method for GroundType" classname="lawnlayer.GroundTest" time="0.036"/>
+  <testcase name="setter method for GroundType" classname="lawnlayer.GroundTest" time="0.06"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

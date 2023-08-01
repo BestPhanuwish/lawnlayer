@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="lawnlayer.AppTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2022-05-04T13:41:14" hostname="192-168-1-106.tpgi.com.au" time="11.665">
+  <properties/>
+  <testcase name="Check existence" classname="lawnlayer.AppTest" time="2.24"/>
+  <testcase name="Player win :)" classname="lawnlayer.AppTest" time="2.713"/>
+  <testcase name="PlayerMovement" classname="lawnlayer.AppTest" time="2.161"/>
+  <testcase name="Check progress reset when go next level" classname="lawnlayer.AppTest" time="2.379"/>
+  <testcase name="Player died :(" classname="lawnlayer.AppTest" time="2.165"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

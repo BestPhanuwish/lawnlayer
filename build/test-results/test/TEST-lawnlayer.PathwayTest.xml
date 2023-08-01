@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="lawnlayer.PathwayTest" tests="18" skipped="0" failures="0" errors="0" timestamp="2022-05-04T13:41:27" hostname="192-168-1-106.tpgi.com.au" time="1.169">
+  <properties/>
+  <testcase name="Clear propagate method" classname="lawnlayer.PathwayTest" time="0.064"/>
+  <testcase name="Simeple create and get propagate method" classname="lawnlayer.PathwayTest" time="0.066"/>
+  <testcase name="Update method but propagate happen at player" classname="lawnlayer.PathwayTest" time="0.069"/>
+  <testcase name="Update method but player have other item" classname="lawnlayer.PathwayTest" time="0.047"/>
+  <testcase name="Edge fill grass method test" classname="lawnlayer.PathwayTest" time="0.069"/>
+  <testcase name="Simeple get the lastest point check" classname="lawnlayer.PathwayTest" time="0.048"/>
+  <testcase name="Edge create and get propagate method but propagate point is not on pathway" classname="lawnlayer.PathwayTest" time="0.06"/>
+  <testcase name="Simeple clear path method" classname="lawnlayer.PathwayTest" time="0.072"/>
+  <testcase name="Getter method for path size" classname="lawnlayer.PathwayTest" time="0.065"/>
+  <testcase name="Simple update method" classname="lawnlayer.PathwayTest" time="0.051"/>
+  <testcase name="Simeple get point to path method" classname="lawnlayer.PathwayTest" time="0.073"/>
+  <testcase name="Simeple add point to path method" classname="lawnlayer.PathwayTest" time="0.076"/>
+  <testcase name="Simeple pointIsInPath method check" classname="lawnlayer.PathwayTest" time="0.068"/>
+  <testcase name="Update method with propagate" classname="lawnlayer.PathwayTest" time="0.067"/>
+  <testcase name="Edge create and get propagate method but path array is empty" classname="lawnlayer.PathwayTest" time="0.05"/>
+  <testcase name="Simple fill grass method test" classname="lawnlayer.PathwayTest" time="0.066"/>
+  <testcase name="Existence Check" classname="lawnlayer.PathwayTest" time="0.058"/>
+  <testcase name="Update method but player have barrier" classname="lawnlayer.PathwayTest" time="0.093"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

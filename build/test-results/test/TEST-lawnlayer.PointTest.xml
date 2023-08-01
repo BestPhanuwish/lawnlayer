@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="lawnlayer.PointTest" tests="13" skipped="0" failures="0" errors="0" timestamp="2022-05-04T13:41:28" hostname="192-168-1-106.tpgi.com.au" time="0.005">
+  <properties/>
+  <testcase name="Simple getter method" classname="lawnlayer.PointTest" time="0.0"/>
+  <testcase name="Simple point set up" classname="lawnlayer.PointTest" time="0.001"/>
+  <testcase name="Simple setter method" classname="lawnlayer.PointTest" time="0.0"/>
+  <testcase name="isSamePoint edge case with same X or Y but not both" classname="lawnlayer.PointTest" time="0.0"/>
+  <testcase name="Setter method on both X and Y together" classname="lawnlayer.PointTest" time="0.0"/>
+  <testcase name="Check if it's same point by, Set point to another point" classname="lawnlayer.PointTest" time="0.001"/>
+  <testcase name="Set point to another point" classname="lawnlayer.PointTest" time="0.0"/>
+  <testcase name="isSamePoint method check if the point is on the same coordinate as another point" classname="lawnlayer.PointTest" time="0.0"/>
+  <testcase name="repetition 1 of 5" classname="lawnlayer.PointTest" time="0.0"/>
+  <testcase name="repetition 2 of 5" classname="lawnlayer.PointTest" time="0.0"/>
+  <testcase name="repetition 3 of 5" classname="lawnlayer.PointTest" time="0.0"/>
+  <testcase name="repetition 4 of 5" classname="lawnlayer.PointTest" time="0.0"/>
+  <testcase name="repetition 5 of 5" classname="lawnlayer.PointTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

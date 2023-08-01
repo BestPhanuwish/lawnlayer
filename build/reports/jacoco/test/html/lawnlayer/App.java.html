@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>App.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">lawnlayer</a> &gt; <a href="index.source.html" class="el_package">lawnlayer</a> &gt; <span class="el_source">App.java</span></div><h1>App.java</h1><pre class="source lang-java linenums">package lawnlayer;
+
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+
+import org.checkerframework.checker.units.qual.A;
+import processing.core.PApplet;
+import processing.data.JSONObject;
+import processing.data.JSONArray;
+
+public class App extends PApplet {
+
+    /**
+     * These final variable are variable that have been provided on the scaffold
+     * You may not need to change these
+     */
+    public static final int WIDTH = 1280;
+    public static final int HEIGHT = 720;
+    public static final int SPRITESIZE = 20;
+    public static final int TOPBAR = 80;
+
+    public static final int FPS = 60;
+
+    /**
+     * The config path name of the game
+     */
+    public String configPath;
+    
+    /**
+     * List contains of all Level object detail in the game such as
+     * - outlay: file name for map tp load in
+     * - goal: the goal for each level
+     * - enemies: JSON Array of enemies within the level preparing to load in
+     */
+<span class="fc" id="L35">    public ArrayList&lt;Level&gt; levelDetails = new ArrayList&lt;Level&gt;();</span>
+    
+    /**
+     * Map data within the game 
+     * contains all the Ground in grid map 2D array 
+     * help clean up the main App by manage map within its class
+     */
+    public Map map;
+
+    /**
+     * Enemies object contains all the enemies data in the game
+     */
+    public Enemies enemies;
+
+    /**
+     * Pathway that player walked past dirt
+     * contains list of Ground inside it
+     * Detect propagation of enemy
+     */
+    public Pathway path;
+
+    /**
+     * Player to computer communication
+     * All the user input will affect within this class
+     */
+    public Player player;
+
+    /**
+     * Powerup item that will pop-up in the game at certain time
+     */
+    public PowerUp item;
+
+    /**
+     * Game essential variable that will affect the main app straightaway
+     * progress can reach goal can cause whole level to change
+     * level change can cause the game to end
+     * lives change can cause the game to end
+     */
+    public int progress;
+    public int level;
+    public int lives;
+
+    /**
+     * Initialise the application and config path name.
+    */
+<span class="fc" id="L80">    public App() {</span>
+<span class="fc" id="L81">        this.configPath = &quot;config.json&quot;;</span>
+<span class="fc" id="L82">    }</span>
+
+    /**
+     * Initialise the setting of the window size
+    */
+    public void settings() {
+<span class="fc" id="L88">        size(WIDTH, HEIGHT);</span>
+<span class="fc" id="L89">    }</span>
+
+    /**
+     * the first function to run when openning the app to setup important aspect of the game
+     * frameRate determine how fast the draw loop will run per second
+     * levelDetails: convert JSON data to array list of Level
+     * map: initialise size of map accorded windows size and sprite size, then load the map using outlay from map details
+     * enemies: initialise enemies then load it in accorded to level data
+     * path: initialise path array and its propagate array
+     * player: initialise the start point and set static status and load its sprite
+     * item: initialise after get random point in map, then set item type by random and delay for 10 second
+    */
+    public void setup() {
+<span class="fc" id="L102">        frameRate(FPS);</span>
+
+        try {
+<span class="fc" id="L105">            JSONObject json = loadJSONObject(configPath);</span>
+
+            // convert json object to Level list object
+<span class="fc" id="L108">            JSONArray levelDetailsJSON = json.getJSONArray(&quot;levels&quot;);</span>
+<span class="fc bfc" id="L109" title="All 2 branches covered.">            for (int i=0; i&lt;levelDetailsJSON.size(); i++) {</span>
+<span class="fc" id="L110">                levelDetails.add(new Level(</span>
+<span class="fc" id="L111">                    levelDetailsJSON.getJSONObject(i).getString(&quot;outlay&quot;), // add level outlay to Level object</span>
+<span class="fc" id="L112">                    levelDetailsJSON.getJSONObject(i).getDouble(&quot;goal&quot;), // add level goal to Level object</span>
+<span class="fc" id="L113">                    levelDetailsJSON.getJSONObject(i).getJSONArray(&quot;enemies&quot;) // add enemies json array to Level object</span>
+                ));
+            }
+
+            // initialise standalone essential variable (declare here bcause lives need JSON data)
+<span class="fc" id="L118">            this.progress = 0;</span>
+<span class="fc" id="L119">            this.level = 1;</span>
+<span class="fc" id="L120">            this.lives = json.getInt(&quot;lives&quot;);</span>
+
+<span class="nc" id="L122">        } catch (Exception e) {</span>
+            // If unable to find JSON file, then close the game
+<span class="nc" id="L124">            System.err.println(&quot;Can't load JSON game data file&quot;);</span>
+<span class="nc" id="L125">            System.exit(0);</span>
+<span class="fc" id="L126">        }</span>
+
+        // Initialise important class
+<span class="fc" id="L129">        this.map = new Map(TOPBAR, WIDTH, HEIGHT, SPRITESIZE);</span>
+<span class="fc" id="L130">        this.enemies = new Enemies();</span>
+<span class="fc" id="L131">        this.path = new Pathway();</span>
+<span class="fc" id="L132">        this.player = new Player(loadImage(&quot;src/main/resources/lawnlayer/ball.png&quot;), TOPBAR, SPRITESIZE);</span>
+        
+        // Update map data from text file and catch error
+        try {
+<span class="fc" id="L136">            this.map.loadMap(this, this.levelDetails.get(this.level-1).getOutlay(), SPRITESIZE, TOPBAR);</span>
+<span class="nc" id="L137">        } catch (FileNotFoundException e) {</span>
+<span class="nc" id="L138">            System.err.println(&quot;Map text file level: &quot; + this.level + &quot; does not exist&quot;);</span>
+<span class="nc" id="L139">            System.exit(0);</span>
+<span class="nc" id="L140">        } catch (Exception e) {</span>
+<span class="nc" id="L141">            e.printStackTrace();</span>
+<span class="nc" id="L142">            System.exit(0);</span>
+<span class="pc" id="L143">        } </span>
+
+        // Update enemies data from json array
+<span class="fc" id="L146">        this.enemies.loadEnemies(this, this.levelDetails.get(this.level-1).getEnemies(), this.map, SPRITESIZE);</span>
+
+        // create an item object
+<span class="fc" id="L149">        this.item = new PowerUp(loadImage(&quot;src/main/resources/lawnlayer/ball.png&quot;), this.map.getRandomPointInMapGridWhichIs(GroundType.Dirt), 600);</span>
+<span class="fc" id="L150">        this.item.setPowerUpType(this, PowerType.getRandomType());</span>
+<span class="fc" id="L151">    }</span>
+
+    /**
+     * Clear player path and set player back to top-right corner, use when changing map, or player losing live
+     */
+    public void reset() {
+<span class="fc" id="L157">        this.path.clear();</span>
+<span class="fc" id="L158">        this.path.clearPropagate();</span>
+<span class="fc" id="L159">        this.map.clearPath();</span>
+<span class="fc" id="L160">        this.player.reset();</span>
+<span class="fc" id="L161">    }</span>
+
+    /**
+     * Display topbar of GUI (number of lives, progress towards goal,
+    current level number, timer remaining on powerup)
+     */
+    public void displayData() {
+<span class="fc" id="L168">        this.textSize(32);</span>
+<span class="fc" id="L169">        this.text(&quot;Lives: &quot; + this.lives, 50, 32);</span>
+<span class="fc" id="L170">        this.text(&quot;Level &quot; + this.level, 1132, 64);</span>
+<span class="fc" id="L171">        this.text(this.progress + &quot;%/&quot; + this.levelDetails.get(this.level-1).getGoal() + &quot;%&quot;, 760, 32);</span>
+
+        // show item GUI when item is activating
+<span class="pc bpc" id="L174" title="1 of 2 branches missed.">        if (this.item.isActive())</span>
+<span class="nc" id="L175">            this.text(this.item.getPowerName() + &quot;: &quot; + this.item.getTimeLeft(), 300, 32);</span>
+<span class="fc" id="L176">    }</span>
+
+    /**
+     * update the level progress by loop through the map and check porpotion of grass out of all tile except concrete
+     */
+    public void updateProgress() {
+<span class="fc" id="L182">        int total_tile = 0;</span>
+<span class="fc" id="L183">        int concrete_tile = 0;</span>
+<span class="fc" id="L184">        int grass_tile = 0;</span>
+<span class="fc" id="L185">        Ground[][] grid = this.map.getMapGrid();</span>
+<span class="fc bfc" id="L186" title="All 2 branches covered.">        for (int i = 0; i &lt; grid.length; i++) {</span>
+<span class="fc bfc" id="L187" title="All 2 branches covered.">            for (int j = 0; j &lt; grid[i].length; j++) {</span>
+<span class="fc" id="L188">                total_tile += 1;</span>
+<span class="fc bfc" id="L189" title="All 2 branches covered.">                if (grid[i][j].getGroundType() == GroundType.Concrete) {</span>
+<span class="fc" id="L190">                    concrete_tile += 1;</span>
+<span class="fc bfc" id="L191" title="All 2 branches covered.">                } else if (grid[i][j].getGroundType() == GroundType.Grass) {</span>
+<span class="fc" id="L192">                    grass_tile += 1;</span>
+                }
+            }
+        }
+
+<span class="fc" id="L197">        double result = ((double) grass_tile/(total_tile-concrete_tile)) * 100;</span>
+<span class="fc" id="L198">        this.progress = (int) Math.ceil(result);</span>
+<span class="fc" id="L199">    }</span>
+	
+    /**
+     * Draw all elements in the game by current frame. 
+    */
+    public void draw() {
+        // draw brown background
+<span class="fc" id="L206">        background(99,60,28);</span>
+
+        // if player's lives more than 0 and the level is existed continue the game normally
+<span class="pc bpc" id="L209" title="1 of 4 branches missed.">        if (this.lives &gt; 0 &amp;&amp; this.level &lt;= this.levelDetails.size()) {</span>
+
+            // update the progress, if reach the goal then changing level
+<span class="fc" id="L212">            this.updateProgress();</span>
+<span class="fc bfc" id="L213" title="All 2 branches covered.">            if (this.progress &gt;= this.levelDetails.get(this.level-1).getGoal()) {</span>
+<span class="fc" id="L214">                this.reset();</span>
+<span class="fc" id="L215">                this.progress = 0;</span>
+<span class="fc" id="L216">                this.level += 1;</span>
+
+                // If no level left then cancel the code below it
+<span class="pc bpc" id="L219" title="1 of 2 branches missed.">                if (this.level &gt; this.levelDetails.size())</span>
+<span class="nc" id="L220">                    return;</span>
+
+                // Load map data from text file and catch error
+                try {
+<span class="fc" id="L224">                    this.map.loadMap(this, this.levelDetails.get(this.level-1).getOutlay(), SPRITESIZE, TOPBAR);</span>
+<span class="nc" id="L225">                } catch (FileNotFoundException e) {</span>
+<span class="nc" id="L226">                    System.err.println(&quot;Map text file level: &quot; + this.level + &quot; does not exist&quot;);</span>
+<span class="nc" id="L227">                    System.exit(0);</span>
+<span class="nc" id="L228">                } catch (Exception e) {</span>
+<span class="nc" id="L229">                    e.printStackTrace();</span>
+<span class="nc" id="L230">                    System.exit(0);</span>
+<span class="pc" id="L231">                }</span>
+
+                // Load enemies data from json array
+<span class="fc" id="L234">                this.enemies.loadEnemies(this, this.levelDetails.get(this.level-1).getEnemies(), this.map, SPRITESIZE);</span>
+
+            }
+
+            // if player hit the green path then reset, otherwise continue the logic
+<span class="pc bpc" id="L239" title="1 of 2 branches missed.">            if (this.path.pointIsInPath(this.player)) {</span>
+<span class="nc" id="L240">                this.lives -= 1;</span>
+<span class="nc" id="L241">                this.reset();</span>
+            }
+
+            // update path propagate and check if player will died
+<span class="fc" id="L245">            boolean propagated = this.path.update(this, this.item);</span>
+<span class="pc bpc" id="L246" title="1 of 2 branches missed.">            if (propagated) {</span>
+<span class="nc" id="L247">                this.lives -= 1;</span>
+<span class="nc" id="L248">                this.reset();</span>
+            }
+
+            // Check if player reach the grid map
+<span class="fc bfc" id="L252" title="All 2 branches covered.">            if (this.map.pointIsInGrid(this.player)) {</span>
+
+                // if reach grid map then get the current ground that player stood on
+<span class="fc" id="L255">                Ground currentPlace = new Ground();</span>
+                try {
+<span class="fc" id="L257">                    currentPlace = this.map.getGroundFromPlayerPoint(this.player);</span>
+<span class="nc" id="L258">                } catch (Exception e) {</span>
+<span class="nc" id="L259">                    e.printStackTrace();</span>
+<span class="nc" id="L260">                    System.exit(0);</span>
+<span class="fc" id="L261">                }</span>
+
+                // update player direction within update method
+                // check if the ground that player stood on is grass or concrete
+                // if yes then fill the grass
+<span class="fc" id="L266">                boolean touchBorder = this.player.update(this, currentPlace, this.path);</span>
+<span class="fc bfc" id="L267" title="All 2 branches covered.">                if (touchBorder) {</span>
+<span class="fc" id="L268">                    map.fillGrass(this, this.enemies.getEnemiesArray());</span>
+                }
+
+                // check if place that player stood on is the same place as where item stand, if yes then receive power
+<span class="fc" id="L272">                this.item.collectItem(this.player);</span>
+            }
+
+            // update enemies direction
+            try {
+<span class="fc" id="L277">                this.enemies.update(this, this.map, this.path);</span>
+<span class="nc" id="L278">            } catch (Exception e) {</span>
+<span class="nc" id="L279">                e.printStackTrace();</span>
+<span class="nc" id="L280">                System.exit(0);</span>
+<span class="fc" id="L281">            }</span>
+
+            // Update logic 
+<span class="fc" id="L284">            this.player.move(this.item);</span>
+<span class="fc" id="L285">            this.enemies.move(this.item);</span>
+<span class="fc" id="L286">            this.item.tick(this, this.map.getRandomPointInMapGridWhichIs(GroundType.Dirt));</span>
+
+            // Handle graphic
+<span class="fc" id="L289">            this.map.drawMap(this);</span>
+<span class="fc" id="L290">            this.player.draw(this);</span>
+<span class="fc" id="L291">            this.enemies.draw(this);</span>
+<span class="fc" id="L292">            this.item.draw(this);</span>
+
+            // Player text data display
+<span class="fc" id="L295">            this.displayData();</span>
+
+<span class="pc bpc" id="L297" title="1 of 2 branches missed.">        } else if (this.lives &lt;= 0) {</span>
+            // if player lost the last lives then show the game over screen
+<span class="fc" id="L299">            this.textSize(128);</span>
+<span class="fc" id="L300">            this.textAlign(CENTER);</span>
+<span class="fc" id="L301">            this.text(&quot;GAME OVER&quot;, 640, 360);</span>
+<span class="fc" id="L302">            return;</span>
+<span class="nc bnc" id="L303" title="All 2 branches missed.">        } else if (this.level &gt; this.levelDetails.size()) {</span>
+            // if player reach last level then shwo victory screen
+<span class="nc" id="L305">            this.textSize(128);</span>
+<span class="nc" id="L306">            this.textAlign(CENTER);</span>
+<span class="nc" id="L307">            this.text(&quot;YOU WIN&quot;, 640, 360);</span>
+<span class="nc" id="L308">            return;</span>
+        }
+<span class="fc" id="L310">    }</span>
+
+    /**
+     * Called every frame if a key is down.
+     * You can access the key with the keyCode variable.
+     */
+    public void keyPressed() {
+        // Left: 37
+        // Up: 38
+        // Right: 39
+        // Down: 40
+<span class="fc bfc" id="L321" title="All 2 branches covered.">        if (this.keyCode == 37) {</span>
+<span class="fc" id="L322">            this.player.pressedLeft(this.item);</span>
+<span class="fc bfc" id="L323" title="All 2 branches covered.">        } else if (this.keyCode == 38) {</span>
+<span class="fc" id="L324">            this.player.pressedUp(this.item);</span>
+<span class="fc bfc" id="L325" title="All 2 branches covered.">        } else if (this.keyCode == 39) {</span>
+<span class="fc" id="L326">            this.player.pressedRight(this.item, WIDTH);</span>
+<span class="fc bfc" id="L327" title="All 2 branches covered.">        } else if (this.keyCode == 40) {</span>
+<span class="fc" id="L328">            this.player.pressedDown(this.item, HEIGHT);</span>
+        }
+<span class="fc" id="L330">    }</span>
+
+    /**
+     * Runs the program.
+     * @param args Command line arguments
+     */
+    public static void main(String[] args) {
+<span class="nc" id="L337">        PApplet.main(&quot;lawnlayer.App&quot;);</span>
+<span class="nc" id="L338">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

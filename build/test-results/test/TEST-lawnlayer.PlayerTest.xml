@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="lawnlayer.PlayerTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2022-05-04T13:41:14" hostname="192-168-1-106.tpgi.com.au" time="0.55">
+  <properties/>
+  <testcase name="Simple Player" classname="lawnlayer.PlayerTest" time="0.379"/>
+  <testcase name="Move right and then move for 9 frame" classname="lawnlayer.PlayerTest" time="0.045"/>
+  <testcase name="Move right 29 frame but it move out of map" classname="lawnlayer.PlayerTest" time="0.034"/>
+  <testcase name="Wild test for moving" classname="lawnlayer.PlayerTest" time="0.033"/>
+  <testcase name="Move right and then move for 9 frame with Speed item" classname="lawnlayer.PlayerTest" time="0.027"/>
+  <testcase name="Move Right and press other key while moving rihgt" classname="lawnlayer.PlayerTest" time="0.029"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

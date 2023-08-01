@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Point.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">lawnlayer</a> &gt; <a href="index.source.html" class="el_package">lawnlayer</a> &gt; <span class="el_source">Point.java</span></div><h1>Point.java</h1><pre class="source lang-java linenums">package lawnlayer;
+
+public class Point {
+    
+    /**
+     * The position x and y coordinate of object on the screen
+     */
+    protected int x;
+    protected int y;
+
+    /**
+     * Constructor for a point using x and y position
+     * @param x coordinate
+     * @param y coordinate
+     */
+<span class="fc" id="L16">    public Point(int x, int y) {</span>
+<span class="fc" id="L17">        this.x = x;</span>
+<span class="fc" id="L18">        this.y = y;</span>
+<span class="fc" id="L19">    }</span>
+
+    /**
+     * Set the point to specific x and y position
+     * @param x require to set x position of point
+     * @param y require to set y position of point
+     */
+    public void setPoint(int x, int y) {
+<span class="fc" id="L27">        this.x = x;</span>
+<span class="fc" id="L28">        this.y = y;</span>
+<span class="fc" id="L29">    }</span>
+
+    /**
+     * Set the point to the same as location of the point provided
+     * @param p another point
+     */
+    public void setPoint(Point p) {
+<span class="fc" id="L36">        this.x = p.x;</span>
+<span class="fc" id="L37">        this.y = p.y;</span>
+<span class="fc" id="L38">    }</span>
+
+    /**
+     * set x position of the point instantly
+     * @param x require to set x position of point
+     */
+    public void setX(int x) {
+<span class="fc" id="L45">        this.x = x;</span>
+<span class="fc" id="L46">    }</span>
+
+    /**
+     * get x position of the current point
+     * @return current x position
+     */
+    public int getX() {
+<span class="fc" id="L53">        return this.x;</span>
+    }
+
+    /**
+     * set y position of the point instantly
+     * @param y require to set y position of point
+     */
+    public void setY(int y) {
+<span class="fc" id="L61">        this.y = y;</span>
+<span class="fc" id="L62">    }</span>
+
+    /**
+     * get y position of the current point
+     * @return current y position
+     */
+    public int getY() {
+<span class="fc" id="L69">        return this.y;</span>
+    }
+
+    /**
+     * compare current point with another point to see if it's at the same coordinate
+     * @param p a other point
+     * @return true or false
+     */
+    public boolean isSamePoint(Point p) {
+<span class="fc bfc" id="L78" title="All 4 branches covered.">        if (this.x == p.getX() &amp;&amp; this.y == p.getY()) {</span>
+<span class="fc" id="L79">            return true;</span>
+        }
+<span class="fc" id="L81">        return false;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Map.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">lawnlayer</a> &gt; <a href="index.source.html" class="el_package">lawnlayer</a> &gt; <span class="el_source">Map.java</span></div><h1>Map.java</h1><pre class="source lang-java linenums">package lawnlayer;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.Random;
+
+import processing.core.PApplet;
+
+public class Map {
+    
+    /**
+     * grid map contains all the Ground tile
+     */
+    private Ground[][] grid;
+
+    /**
+     * initialise the size of the grid accorded to screen size and sprite size
+     * @param topBarSize
+     * @param screenWidth
+     * @param screenHeight
+     * @param spriteSize
+     */
+<span class="fc" id="L24">    public Map(int topBarSize, int screenWidth, int screenHeight, int spriteSize) {</span>
+<span class="fc" id="L25">        this.grid = new Ground[(screenHeight-topBarSize)/spriteSize][screenWidth/spriteSize];</span>
+<span class="fc" id="L26">    }</span>
+
+    /**
+     * Update map data accorded to level name
+     * @param app the main application to load the concrete sprite
+     * @param mapName the map name can found in config file
+     * @param SPRITESIZE the sprite size value from static variable on main app
+     * @param TOPBAR the topbar size value from static variable on main app
+     * @throws FileNotFoundException if the level text file does not exist, will pass this exception to the main app
+     * @throws Exception throw exception when map not read correctly (eg. the concrete is not cover all frame of the map)
+    */
+    public void loadMap(PApplet app, String mapName, int SPRITESIZE, int TOPBAR) throws Exception {
+<span class="fc" id="L38">        File mapFile = new File(mapName);</span>
+<span class="fc" id="L39">        Scanner scan = new Scanner(mapFile);</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        for (int i = 0; i &lt; grid.length; i++) { // loop on each row in text file within map boundary</span>
+<span class="fc" id="L41">            String line = scan.nextLine();</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">            for (int j = 0; j &lt; grid[i].length; j++) { // loop on each column in text file within map boundary</span>
+                // if X is on text file then place cement, otherwise empty dirt
+<span class="fc bfc" id="L44" title="All 2 branches covered.">                if (line.charAt(j) == 'X') {</span>
+<span class="fc" id="L45">                    grid[i][j] = new Ground(j*SPRITESIZE, TOPBAR+i*SPRITESIZE, GroundType.Concrete, app.loadImage(&quot;src/main/resources/lawnlayer/concrete_tile.png&quot;));</span>
+                } else {
+                    // If no concrete on the border, then throw exception and close the game
+<span class="pc bpc" id="L48" title="4 of 8 branches missed.">                    if (i == 0 || j == 0 || i == grid.length-1 || j == grid[i].length-1) {</span>
+<span class="nc" id="L49">                        scan.close();</span>
+<span class="nc" id="L50">                        throw new Exception(&quot;Map format uncorrectly read. Please ensure that X place on row: &quot; + i+1 + &quot; column: &quot; + j+1);</span>
+                    } else {
+<span class="fc" id="L52">                        grid[i][j] = new Ground(j*SPRITESIZE, TOPBAR+i*SPRITESIZE, GroundType.Dirt);</span>
+                    }
+                }
+            }
+        }
+<span class="fc" id="L57">        scan.close();</span>
+<span class="fc" id="L58">    }</span>
+    
+    /**
+     * Graphic handle method, to draw all the Ground in map every frame
+     * @param app main app to draw ground
+     */
+    public void drawMap(PApplet app) {
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        for (int i = 0; i &lt; this.grid.length; i++) {</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">            for (int j = 0; j &lt; this.grid[i].length; j++) {</span>
+<span class="fc" id="L67">                this.grid[i][j].draw(app);</span>
+            }
+        }
+<span class="fc" id="L70">    }</span>
+
+    /**
+     * getter method to get the map grid
+     * @return grid map contains Ground
+     */
+    public Ground[][] getMapGrid() {
+<span class="fc" id="L77">        return this.grid;</span>
+    }
+
+    /**
+     * Clear all the Pathway on map grid technically and visually
+     * by loop through the map and change all path tile to dirt
+     */
+    public void clearPath() {
+<span class="fc bfc" id="L85" title="All 2 branches covered.">        for (int i = 0; i &lt; this.grid.length; i++) {</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">            for (int j = 0; j &lt; this.grid[i].length; j++) {</span>
+<span class="pc bpc" id="L87" title="2 of 4 branches missed.">                if (this.grid[i][j].getGroundType() == GroundType.GreenPath || this.grid[i][j].getGroundType() == GroundType.RedPath) {</span>
+<span class="nc" id="L88">                    this.grid[i][j].setGroundType(GroundType.Dirt);</span>
+<span class="nc" id="L89">                    this.grid[i][j].setSprite(null);</span>
+                }
+            }
+        }
+<span class="fc" id="L93">    }</span>
+
+    /**
+     * Loop and check if point is on the map grid
+     * @param p another point
+     * @return true of this point is in grid
+     */
+    public boolean pointIsInGrid(Point p) {
+<span class="fc bfc" id="L101" title="All 2 branches covered.">        for (int i = 0; i &lt; this.grid.length; i++) {</span>
+<span class="fc bfc" id="L102" title="All 2 branches covered.">            for (int j = 0; j &lt; this.grid[i].length; j++) {</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">                if (this.grid[i][j].isSamePoint(p)) {</span>
+<span class="fc" id="L104">                    return true;</span>
+                }
+            }
+        }
+<span class="fc" id="L108">        return false;</span>
+    }
+
+    /**
+     * get the current ground that player is stood on
+     * @param p player
+     * @return Ground that player stood on
+     * @throws Exception if weird case happen where player not stand on the grid map
+     * ONLY USE THIS FUNCTION WHEN PLAYER IS ON THE GRID MAP
+     */
+    public Ground getGroundFromPlayerPoint(Player p) throws Exception {
+<span class="pc bpc" id="L119" title="1 of 2 branches missed.">        for (int i = 0; i &lt; this.grid.length; i++) {</span>
+<span class="fc bfc" id="L120" title="All 2 branches covered.">            for (int j = 0; j &lt; this.grid[i].length; j++) {</span>
+<span class="fc bfc" id="L121" title="All 4 branches covered.">                if (this.grid[i][j].getX() == p.getX() &amp;&amp; this.grid[i][j].getY() == p.getY()) {</span>
+<span class="fc" id="L122">                    return this.grid[i][j];</span>
+                }
+            }
+        }
+<span class="nc" id="L126">        throw new Exception(&quot;Point X:&quot; + p.x + &quot; Y: &quot; + p.y + &quot; is not on the grid map and unable to get the ground&quot;);</span>
+    }
+
+    /**
+     * get ground from specific point without need to be on the grid
+     * @param p point
+     * @return Ground that point is on
+     * @throws Exception if point is outside the map area
+     */
+    public Ground getGroundFromPoint(Point p) throws Exception {
+<span class="pc bpc" id="L136" title="1 of 2 branches missed.">        for (int i = 0; i &lt; this.grid.length; i++) {</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">            for (int j = 0; j &lt; this.grid[i].length; j++) {</span>
+<span class="pc bpc" id="L138" title="1 of 4 branches missed.">                if (this.grid[i][j].getX() == p.getX() &amp;&amp; this.grid[i][j].getY() == p.getY()) {</span>
+<span class="nc" id="L139">                    return this.grid[i][j];</span>
+                }
+
+                // get the grid bound
+<span class="fc" id="L143">                int leftLimit = this.grid[i][j].getX();</span>
+<span class="fc" id="L144">                int upLimit = this.grid[i][j].getY();</span>
+                int rightLimit;
+                try {
+<span class="fc" id="L147">                    rightLimit = this.grid[i][j+1].getX();</span>
+<span class="fc" id="L148">                } catch (IndexOutOfBoundsException e) {</span>
+<span class="fc" id="L149">                    rightLimit = this.grid[i][j].getX() + 20;</span>
+<span class="fc" id="L150">                }</span>
+                int downLimit;
+                try {
+<span class="fc" id="L153">                    downLimit = this.grid[i+1][j].getY();</span>
+<span class="fc" id="L154">                } catch (IndexOutOfBoundsException e) {</span>
+<span class="fc" id="L155">                    downLimit = this.grid[i][j].getY() + 20;</span>
+<span class="fc" id="L156">                }</span>
+
+                // check if the point is on the grid boundary
+<span class="pc bpc" id="L159" title="1 of 8 branches missed.">                if (p.getX() &gt;= leftLimit &amp;&amp; p.getX() &lt; rightLimit &amp;&amp; p.getY() &gt;= upLimit &amp;&amp; p.getY() &lt;= downLimit) {</span>
+<span class="fc" id="L160">                    return this.grid[i][j];</span>
+                }
+            }
+        }
+<span class="nc" id="L164">        throw new Exception(&quot;Point X:&quot; + p.x + &quot; Y: &quot; + p.y + &quot; is not on the grid map and unable to get the ground&quot;);</span>
+    }
+
+    /**
+     * get the coordinate grid map row and column
+     * can be any point within the map area
+     * @param x coordinate
+     * @param y coordinate
+     * @return String contains grid row and column
+     */
+    public String getCoordinateInGridMap(int x, int y){
+<span class="pc bpc" id="L175" title="1 of 2 branches missed.">        for (int i = 0; i &lt; this.grid.length; i++) {</span>
+<span class="fc bfc" id="L176" title="All 2 branches covered.">            for (int j = 0; j &lt; this.grid[i].length; j++) {</span>
+                // if it the same position of grid then it's that grid
+<span class="pc bpc" id="L178" title="1 of 4 branches missed.">                if (this.grid[i][j].getX() == x &amp;&amp; this.grid[i][j].getY() == y) {</span>
+<span class="nc" id="L179">                    return i + &quot;,&quot; + j;</span>
+                }
+
+                // get the grid bound
+<span class="fc" id="L183">                int leftLimit = this.grid[i][j].getX();</span>
+<span class="fc" id="L184">                int upLimit = this.grid[i][j].getY();</span>
+                int rightLimit;
+                try {
+<span class="fc" id="L187">                    rightLimit = this.grid[i][j+1].getX();</span>
+<span class="fc" id="L188">                } catch (IndexOutOfBoundsException e) {</span>
+<span class="fc" id="L189">                    rightLimit = this.grid[i][j].getX() + 20;</span>
+<span class="fc" id="L190">                }</span>
+                int downLimit;
+                try {
+<span class="fc" id="L193">                    downLimit = this.grid[i+1][j].getY();</span>
+<span class="nc" id="L194">                } catch (IndexOutOfBoundsException e) {</span>
+<span class="nc" id="L195">                    downLimit = this.grid[i][j].getY() + 20;</span>
+<span class="fc" id="L196">                }</span>
+
+                // check if the point is on the grid boundary
+<span class="pc bpc" id="L199" title="1 of 8 branches missed.">                if (x &gt;= leftLimit &amp;&amp; x &lt; rightLimit &amp;&amp; y &gt;= upLimit &amp;&amp; y &lt;= downLimit) {</span>
+<span class="fc" id="L200">                    return i + &quot;,&quot; + j;</span>
+                }
+            }
+        }
+<span class="nc" id="L204">        return &quot;-1&quot;;</span>
+    }
+
+    /**
+     * Random loop until the Point select is match the GroundType
+     * @param type of the ground
+     * @return Point of map grid with that type of ground
+     */
+    public Point getRandomPointInMapGridWhichIs(GroundType type) {
+        while (true) {
+<span class="fc" id="L214">            Ground[] spaceRow = this.grid[new Random().nextInt(this.grid.length)];</span>
+<span class="fc" id="L215">            Ground place = spaceRow[new Random().nextInt(spaceRow.length)];</span>
+<span class="fc bfc" id="L216" title="All 2 branches covered.">            if (place.getGroundType() == type) </span>
+<span class="fc" id="L217">                return new Point(place.getX(), place.getY());</span>
+<span class="fc" id="L218">        }</span>
+    }
+
+    /**
+     * This method can only be called within the class
+     * fill the array recursively
+     * @param floodfill array contains 0,1,2
+     * @param i curent row index
+     * @param j current column index
+     */
+    private void floodfillRecursive(int[][] floodfill, int i, int j) {
+        /*
+        i will never be less than 0 or greater than row size
+        j will never be less than 0 or greater than column size
+        the current index should be 0 only to be able to fill (which is normal dirt)
+        */
+<span class="pc bpc" id="L234" title="4 of 10 branches missed.">        if (i &lt; 0 || j &lt; 0 || i &gt;= floodfill.length || j &gt;= floodfill[0].length || floodfill[i][j] != 0) {</span>
+<span class="fc" id="L235">            return;</span>
+        }
+
+        // by making the floodfill 1 mean that specific grid will trun to dirt because it's where the enemy existed
+<span class="fc" id="L239">        floodfill[i][j] = 1;</span>
+
+        // fill the neighborhood, by doing this the neighborhood will fill the next the neighborhood if condition above is satisfied
+<span class="fc" id="L242">        floodfillRecursive(floodfill, i+1, j);</span>
+<span class="fc" id="L243">        floodfillRecursive(floodfill, i-1, j);</span>
+<span class="fc" id="L244">        floodfillRecursive(floodfill, i, j+1);</span>
+<span class="fc" id="L245">        floodfillRecursive(floodfill, i, j-1);</span>
+<span class="fc" id="L246">    }</span>
+
+    /**
+     * fill the map with grass regarded to enemies position
+     * @param app to filled the grass
+     * @param enemies will not filled within the enemy teritory
+     */
+    public void fillGrass(PApplet app, ArrayList&lt;Enemy&gt; enemies) {
+        /*
+        fill the new array with number accorded to groundtype of grid map where
+        2 = concrete or grass
+        0 = dirt
+        */
+<span class="fc" id="L259">        int[][] floodfill = new int[this.grid.length][this.grid[0].length];</span>
+<span class="fc bfc" id="L260" title="All 2 branches covered.">        for (int i = 0; i &lt; floodfill.length; i++) {</span>
+<span class="fc bfc" id="L261" title="All 2 branches covered.">            for (int j = 0; j &lt; floodfill[i].length; j++) {</span>
+<span class="fc bfc" id="L262" title="All 4 branches covered.">                if (this.grid[i][j].getGroundType() == GroundType.Concrete || this.grid[i][j].getGroundType() == GroundType.Grass) {</span>
+<span class="fc" id="L263">                    floodfill[i][j] = 2;</span>
+                } else {
+<span class="fc" id="L265">                    floodfill[i][j] = 0;</span>
+                }
+            }
+        }
+
+        /*
+        loop through every enemy to check its neightborhood
+        and decided whether or not the space will turn into grass
+        if empty dirt have no enemy nearby then it will change to grass
+        */
+<span class="fc bfc" id="L275" title="All 2 branches covered.">        for (Enemy e : enemies) {</span>
+            // initialise the start point of floodfill process
+<span class="fc" id="L277">            int i = 0;</span>
+<span class="fc" id="L278">            int j = 0;</span>
+
+            // check each 4 corner of the enemy
+<span class="fc" id="L281">            Point[] enemyCoordinate = {</span>
+                e,
+<span class="fc" id="L283">                new Point(e.x+e.getSpriteSize(), e.y),</span>
+<span class="fc" id="L284">                new Point(e.x, e.y+e.getSpriteSize()),</span>
+<span class="fc" id="L285">                new Point(e.x+e.getSpriteSize(), e.y+e.getSpriteSize())</span>
+            };
+
+            // loop through every corner if the type of that corner landed is dirt, then get that coordinate
+<span class="pc bpc" id="L289" title="1 of 2 branches missed.">            for (Point p : enemyCoordinate) {</span>
+<span class="fc" id="L290">                String coordinate = this.getCoordinateInGridMap(p.x, p.y);</span>
+<span class="pc bpc" id="L291" title="1 of 2 branches missed.">                if (!coordinate.equals(&quot;-1&quot;)) {</span>
+<span class="fc" id="L292">                    String[] stringArray = coordinate.split(&quot;,&quot;);</span>
+<span class="fc" id="L293">                    int yCoor = Integer.parseInt(stringArray[0]);</span>
+<span class="fc" id="L294">                    int xCoor = Integer.parseInt(stringArray[1]);</span>
+<span class="pc bpc" id="L295" title="1 of 2 branches missed.">                    if (this.grid[yCoor][xCoor].getGroundType() == GroundType.Dirt) {</span>
+<span class="fc" id="L296">                        i = yCoor;</span>
+<span class="fc" id="L297">                        j = xCoor;</span>
+<span class="fc" id="L298">                        break;</span>
+                    }
+                }
+            }
+
+            /*
+            Change the current floodfill grid if the current coordinate is normal dirt
+            0 = normal dirt that will change to grass
+            1 = this will be dirt because it's the neightborhood with enemy coordinate
+            2 = grass or concrete that will stop the filling process
+            */
+<span class="fc bfc" id="L309" title="All 2 branches covered.">            if (floodfill[i][j] == 0)</span>
+<span class="fc" id="L310">                this.floodfillRecursive(floodfill, i, j);</span>
+
+<span class="fc" id="L312">        }</span>
+
+        // loop throught the floodfill then fill the grass if floodfill element is 0
+<span class="fc bfc" id="L315" title="All 2 branches covered.">        for (int i = 0; i &lt; floodfill.length; i++) {</span>
+<span class="fc bfc" id="L316" title="All 2 branches covered.">            for (int j = 0; j &lt; floodfill[i].length; j++) {</span>
+<span class="pc bpc" id="L317" title="1 of 4 branches missed.">                if (this.grid[i][j].getGroundType() == GroundType.Dirt &amp;&amp; floodfill[i][j] == 0) {</span>
+<span class="nc" id="L318">                    this.grid[i][j].setGroundType(GroundType.Grass);</span>
+<span class="nc" id="L319">                    this.grid[i][j].setSprite(app.loadImage(&quot;src/main/resources/lawnlayer/grass.png&quot;));</span>
+                }
+            }
+        }
+<span class="fc" id="L323">    }</span>
+
+    public void fillAllGrass(PApplet app) {
+<span class="fc bfc" id="L326" title="All 2 branches covered.">        for (int i = 0; i &lt; this.grid.length; i++) {</span>
+<span class="fc bfc" id="L327" title="All 2 branches covered.">            for (int j = 0; j &lt; this.grid[i].length; j++) {</span>
+<span class="fc bfc" id="L328" title="All 2 branches covered.">                if (this.grid[i][j].getGroundType() == GroundType.Dirt) {</span>
+<span class="fc" id="L329">                    this.grid[i][j].setGroundType(GroundType.Grass);</span>
+<span class="fc" id="L330">                    this.grid[i][j].setSprite(app.loadImage(&quot;src/main/resources/lawnlayer/grass.png&quot;));</span>
+                }
+            }
+        }
+<span class="fc" id="L334">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

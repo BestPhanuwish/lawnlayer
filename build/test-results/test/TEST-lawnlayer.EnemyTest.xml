@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="lawnlayer.EnemyTest" tests="13" skipped="0" failures="0" errors="0" timestamp="2022-05-04T13:41:26" hostname="192-168-1-106.tpgi.com.au" time="0.622">
+  <properties/>
+  <testcase name="Getter method for enemy type" classname="lawnlayer.EnemyTest" time="0.05"/>
+  <testcase name="repetition 1 of 5" classname="lawnlayer.EnemyTest" time="0.037"/>
+  <testcase name="repetition 2 of 5" classname="lawnlayer.EnemyTest" time="0.045"/>
+  <testcase name="repetition 3 of 5" classname="lawnlayer.EnemyTest" time="0.051"/>
+  <testcase name="repetition 4 of 5" classname="lawnlayer.EnemyTest" time="0.047"/>
+  <testcase name="repetition 5 of 5" classname="lawnlayer.EnemyTest" time="0.033"/>
+  <testcase name="Existence check" classname="lawnlayer.EnemyTest" time="0.064"/>
+  <testcase name="Getter method for sprite size" classname="lawnlayer.EnemyTest" time="0.039"/>
+  <testcase name="Getter method for x direction" classname="lawnlayer.EnemyTest" time="0.05"/>
+  <testcase name="Getter method for y direction" classname="lawnlayer.EnemyTest" time="0.047"/>
+  <testcase name="Complex move method" classname="lawnlayer.EnemyTest" time="0.05"/>
+  <testcase name="Setter method for x direction" classname="lawnlayer.EnemyTest" time="0.051"/>
+  <testcase name="Setter method for y direction" classname="lawnlayer.EnemyTest" time="0.033"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

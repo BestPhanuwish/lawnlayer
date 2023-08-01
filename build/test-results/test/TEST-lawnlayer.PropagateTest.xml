@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="lawnlayer.PropagateTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2022-05-04T13:41:29" hostname="192-168-1-106.tpgi.com.au" time="0.002">
+  <properties/>
+  <testcase name="Setter Count" classname="lawnlayer.PropagateTest" time="0.001"/>
+  <testcase name="Setter Index" classname="lawnlayer.PropagateTest" time="0.0"/>
+  <testcase name="Setter Timer" classname="lawnlayer.PropagateTest" time="0.0"/>
+  <testcase name="Getter Count" classname="lawnlayer.PropagateTest" time="0.0"/>
+  <testcase name="Getter Index" classname="lawnlayer.PropagateTest" time="0.0"/>
+  <testcase name="Getter Timer" classname="lawnlayer.PropagateTest" time="0.0"/>
+  <testcase name="Existence Check" classname="lawnlayer.PropagateTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
